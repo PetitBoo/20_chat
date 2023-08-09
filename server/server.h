@@ -16,7 +16,7 @@
 #include <unistd.h>
 #endif
 
-int new_socket();
+int create_socket();
 int accept_client(int server_socket);
 
 int get_data_size(int socket);

@@ -15,6 +15,7 @@ constexpr auto PLATFORM_NAME = "Linux";
 #include "message.h"
 #include "user.h"
 #include "server.h"
+#include "mysql.h"
 struct UserLoginExp : public std::exception
 {
 	const char* what() const noexcept override { return "error: user login is busy\n"; }

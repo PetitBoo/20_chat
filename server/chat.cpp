@@ -2,7 +2,7 @@
 
 void Chat::start()
 {
-	
+
 #ifdef _WIN64
 
 	std::time_t t = std::time(nullptr);
@@ -21,7 +21,7 @@ void Chat::start()
 #endif
 
 
-	
+
 	std::ifstream file_users("users.txt");
 	if (file_users.is_open()) {
 		std::string login, name, pass;
@@ -294,10 +294,9 @@ void Chat::change_name(int client_socket)
 		for (auto& user : users_) {
 			if (current_user_->get_login() == user.get_login()) {
 				user.set_name(name);
-				/
-				current_user_->set_name(name);
+					current_user_->set_name(name);
 
-				
+
 				return;
 			}
 		}
@@ -307,7 +306,7 @@ void Chat::change_name(int client_socket)
 
 void Chat::change_password(int client_socket)
 {
-	
+
 
 	std::string message = "Enter new password: ";
 	send_string(client_socket, message);
@@ -320,10 +319,10 @@ void Chat::change_password(int client_socket)
 		for (auto& user : users_) {
 			if (current_user_->get_login() == user.get_login()) {
 				user.set_password(password);
-				
+
 				current_user_->set_password(password);
 
-				
+
 				return;
 			}
 		}
@@ -332,7 +331,10 @@ void Chat::change_password(int client_socket)
 
 void Chat::show_chat(int client_socket) const // showing all messages
 {
-	
+	MYSQL mysql;
+	MYSQL_RES* res;
+	MYSQL_ROW row;
+
 	std::ostringstream ss;
 	for (auto& message : messages_) {
 		if (current_user_->get_name() == message.get_from())
@@ -342,7 +344,17 @@ void Chat::show_chat(int client_socket) const // showing all messages
 		else if (message.get_to() == "All")
 			ss << "\n" << message.get_from() << ": " << message.get_text() << "\n";
 	}
-
+	mysql_query(&mysql, "SELECT * FROM table_messages");
+	if (res = mysql_store_result(&mysql)) {
+		while (row = mysql_fetch_row(res)) {
+			for (int i = 0; i < mysql_num_fields(res); i++) {
+				std::cout << row[i] << "  ";
+			}
+			std::cout << std::endl;
+		}
+	}
+	else
+		std::cout << "Ошибка MySql номер " << mysql_error(&mysql);
 	std::string serialized_data = ss.str();
 	if (send(client_socket, serialized_data.c_str(), serialized_data.size(), 0) == -1) {
 		std::cerr << "Failed to send data to client" << std::endl;
@@ -396,6 +408,7 @@ void Chat::add_message(int client_socket)
 		auto data = receive_data(client_socket, data_size);
 		text = std::string(data.get(), data_size);
 		messages_.emplace_back(from, to, text);
+		mysql_query(&mysql, "INSERT INTO table_allmessages(id, from, to, message) values(default, from, to, message)");
 	}
 }
 

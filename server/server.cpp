@@ -1,6 +1,6 @@
 #include "server.h"
 
-int new_socket() {
+int create_socket() {
 #ifdef _WIN64
     WSADATA wsaData;
     int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
