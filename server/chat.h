@@ -4,6 +4,7 @@
 #include <fstream>
 #include <filesystem>
 #include <sstream>
+#include <thread>
 #ifdef _WIN64
 constexpr auto PLATFORM_NAME = "Windows";
 #elif __linux__
@@ -13,9 +14,11 @@ constexpr auto PLATFORM_NAME = "Linux";
 #include <sys/stat.h>
 #endif
 #include "message.h"
+#include "logger.h"
 #include "user.h"
 #include "server.h"
-#include "mysql.h"
+
+
 struct UserLoginExp : public std::exception
 {
 	const char* what() const noexcept override { return "error: user login is busy\n"; }
