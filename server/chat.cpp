@@ -4,7 +4,7 @@
 #include <shared_mutex>
 #include "logger.h"
 
-Logger log;
+
 
 void Chat::start()
 {
@@ -186,7 +186,7 @@ void Chat::sign_up(int client_socket)
 	if (data_size > 0) {
 		auto data = receive_package(client_socket, data_size);
 		std::string login(data->message);
-		log.LoggerWrite(login);
+
 
 
 		if (get_user_login(login))
@@ -204,7 +204,6 @@ void Chat::sign_up(int client_socket)
 		if (data_size > 0) {
 			auto data = receive_package(client_socket, data_size);
 			std::string name(data->message);
-			log.LoggerWrite(name);
 
 			if (get_user_name(name) || name == "All")
 				throw UserNameExp(); // checking is new name unique
@@ -293,7 +292,6 @@ void Chat::change_name(int client_socket)
 		for (auto& user : users_) {
 			if (current_user_->get_login() == user.get_login()) {
 				user.set_name(name);
-				log.LoggerWrite(name);
 				current_user_ = move(get_user_login(current_user_->get_login()));
 				return;
 			}
@@ -416,9 +414,6 @@ void Chat::add_message(int client_socket)
 		auto data = receive_package(client_socket, data_size);
 		text = std::string(data->message);
 		messages_.emplace_back(from, to, text);
-		log.LoggerWrite(from);
-		log.LoggerWrite(to);
-		log.LoggerWrite(text);
 	}
 }
 

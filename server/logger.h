@@ -17,4 +17,5 @@ public:
 
 private:
 	std::shared_mutex shared_mutex;
-}
+	const char* fName = "logger.txt";
+};

@@ -10,7 +10,7 @@
 
 Logger::Logger()
 {
-		std::ofstream file("logger.txt", std::ios_base::out);
+		std::ofstream file(fName, std::ios_base::out);
 		if (file.is_open()) {
 			file << "Logger is open.\n";
 		}
@@ -32,7 +32,7 @@ void Logger::LoggerRead()
 {
 	shared_mutex.lock_shared();
 	std::vector<std::string> outputs;
-	std::ifstream file("logger.txt");
+	std::ifstream file(fName);
 	std::string temp;
 	while (std::getline(file, temp))
 	{
